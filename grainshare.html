@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRAINSHARE - Reduce Food Waste</title>
+    <style>
+        /* SIMPLE AUTHENTICATION MODAL - Shows first, hides website */
+        .auth-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            background: white;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            box-sizing: border-box;
+        }
+
+        .auth-modal.active {
+            display: flex;
+        }
+
+        .auth-container {
+            background: #f8f9fa;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            border: 1px solid #e9ecef;
+            box-sizing: border-box;
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .auth-form h2 {
+            margin-bottom: 30px;
+            color: #0d47a1;
+            font-size: 2.2rem;
+            font-weight: 600;
+        }
+
+        .auth-form .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .auth-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .auth-form input, .auth-form select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+            transition: border-color 0.3s ease;
+        }
+
+        .auth-form input:focus, .auth-form select:focus {
+            outline: none;
+            border-color: #2196f3;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 16px;
+            background: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .auth-btn:hover {
+            background: #1976d2;
+        }
+
+        .auth-switch {
+            margin-top: 25px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .auth-switch a {
+            color: #2196f3;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #ffffff;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: #ffffff;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        nav .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        nav .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2196f3;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            color: #2196f3;
+            text-decoration: none;
+            padding: 5px 10px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            background-color: #2196f3;
+            color: white;
+        }
+
+        /* Page Sections */
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding-top: 70px; /* Account for fixed nav */
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Hero Section - Two-column layout with text left, image right */
+        .hero {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: #0d47a1;
+            padding: 100px 20px;
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="%230d47a1" opacity="0.1"/></svg>') repeat;
+            opacity: 0.1;
+        }
+
+        .hero .container {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-text {
+            flex: 1;
+            padding-right: 40px;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .hero-text p {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+
+        .hero-image {
+            flex: 1;
+            text-align: center;
+        }
+
+        .hero-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        /* Storytelling Section */
+        .storytelling {
+            padding: 100px 20px;
+            background-color: #f8f9fa;
+        }
+
+        .storytelling h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #0d47a1;
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+
+        .stories {
+            display: flex;
+            gap: 60px;
+            margin-bottom: 3rem;
+        }
+
+        .story-card {
+            flex: 1;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-left: 4px solid #2196f3;
+            transition: transform 0.3s ease;
+        }
+
+        .story-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .story-card h3 {
+            margin-bottom: 1.5rem;
+            color: #2196f3;
+            font-size: 1.5rem;
+        }
+
+        .story-card p {
+            color: #666;
+            line-height: 1.7;
+        }
+
+        .story-conclusion {
+            text-align: center;
+            font-style: italic;
+            color: #0d47a1;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        /* About Cards */
+        .about-cards {
+            margin-bottom: 3rem;
+        }
+
+        .about-card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-left: 4px solid #2196f3;
+            transition: transform 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        .about-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .about-card h3 {
+            margin-bottom: 1.5rem;
+            color: #2196f3;
+            font-size: 1.5rem;
+        }
+
+        .about-card p, .about-card ul {
+            color: #666;
+            line-height: 1.7;
+        }
+
+        .about-card ul {
+            padding-left: 20px;
+        }
+
+        .about-card li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 100px 20px;
+            background-color: white;
+        }
+
+        .how-it-works h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #0d47a1;
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+
+        .steps {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+        }
+
+        .step {
+            text-align: center;
+            flex: 1;
+            max-width: 250px;
+        }
+
+        .step-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .step h3 {
+            margin-bottom: 1rem;
+            color: #2196f3;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .step p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Call to Action */
+        .cta {
+            padding: 100px 20px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        }
+
+        .cta h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #0d47a1;
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+
+        .cta-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .cta-btn {
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            min-width: 160px;
+            background-color: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);
+        }
+
+        .cta-btn:hover {
+            background-color: #1976d2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.3);
+        }
+
+        /* NGOs Section */
+        .ngos {
+            padding: 100px 20px;
+            background-color: #f8f9fa;
+        }
+
+        .ngos h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #0d47a1;
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+
+        .ngo-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+        }
+
+        .ngo-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-top: 4px solid #2196f3;
+            transition: transform 0.3s ease;
+        }
+
+        .ngo-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .ngo-card h3 {
+            margin-bottom: 1rem;
+            color: #0d47a1;
+            font-size: 1.3rem;
+        }
+
+        .ngo-card p {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .verified {
+            color: #2196f3;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .ngo-card a {
+            color: #2196f3;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .ngo-card a:hover {
+            color: #1976d2;
+            text-decoration: underline;
+        }
+
+        /* Enhanced Form Styles for Donate and Request Pages */
+        #donate .form-container,
+        #request .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        #donate .form-container h2,
+        #request .form-container h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #0d47a1;
+            font-size: 2.2rem;
+            font-weight: 600;
+        }
+
+        #donate .form-group,
+        #request .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        #donate .form-group label,
+        #request .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+        }
+
+        #donate .form-group input,
+        #donate .form-group select,
+        #donate .form-group textarea,
+        #request .form-group input,
+        #request .form-group select,
+        #request .form-group textarea {
+            width: 100%;
+            padding: 16px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            background: #fafafa;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        #donate .form-group input:focus,
+        #donate .form-group select:focus,
+        #donate .form-group textarea:focus,
+        #request .form-group input:focus,
+        #request .form-group select:focus,
+        #request .form-group textarea:focus {
+            outline: none;
+            border-color: #2196f3;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.1);
+            transform: translateY(-1px);
+        }
+
+        #donate .form-group textarea,
+        #request .form-group textarea {
+            height: 120px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        #donate .form-group select,
+        #request .form-group select {
+            cursor: pointer;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path fill="%23333" d="M6 8L2 4h8z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 12px;
+            padding-right: 40px;
+        }
+
+        #donate .form-group input[type="checkbox"],
+        #request .form-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        #donate .form-group label:has(input[type="checkbox"]),
+        #request .form-group label:has(input[type="checkbox"]) {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0;
+            font-weight: 500;
+            color: #555;
+        }
+
+        #donate .btn,
+        #request .btn {
+            display: inline-block;
+            background-color: #2196f3;
+            color: white;
+            padding: 18px 40px;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-weight: 600;
+            font-size: 18px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        }
+
+        #donate .btn:hover,
+        #request .btn:hover {
+            background-color: #1976d2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+        }
+
+        /* Dashboard - NGO and Donor Dashboard Pages */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .dashboard-card {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-left: 4px solid #2196f3;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .dashboard-card h3 {
+            margin-bottom: 1rem;
+            color: #0d47a1;
+        }
+
+        .dashboard-card h4 {
+            margin-bottom: 1rem;
+            color: #0d47a1;
+            font-size: 1.1rem;
+        }
+
+        #dashboard h3 {
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            color: #0d47a1;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .stat {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2196f3;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #0d47a1;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 200px;
+            margin: 10px;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 15px;
+            color: #2196f3;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section li {
+            margin-bottom: 8px;
+        }
+
+        .footer-section a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: #2196f3;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #2196f3;
+            padding-top: 15px;
+        }
+
+        .footer-bottom p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        /* Buttons - Consistent styling across all pages */
+        .btn {
+            display: inline-block;
+            background-color: #2196f3;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            background-color: #0d47a1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: #e3f2fd;
+            color: #0d47a1;
+        }
+
+        .btn-secondary:hover {
+            background-color: #bbdefb;
+        }
+
+
+        /* Responsive adjustments for Donate and Request forms */
+        @media (max-width: 768px) {
+            #donate .form-container,
+            #request .form-container {
+                padding: 30px 20px;
+                margin: 20px;
+                border-radius: 12px;
+            }
+
+            #donate .form-container h2,
+            #request .form-container h2 {
+                font-size: 1.8rem;
+                margin-bottom: 30px;
+            }
+
+            #donate .form-group input,
+            #donate .form-group select,
+            #donate .form-group textarea,
+            #request .form-group input,
+            #request .form-group select,
+            #request .form-group textarea {
+                padding: 14px 16px;
+                font-size: 16px;
+            }
+
+            #donate .btn,
+            #request .btn {
+                padding: 16px 30px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- AUTHENTICATION MODAL - Shows first when site loads -->
+    <div id="auth-modal" class="auth-modal active">
+        <div class="auth-container">
+            <!-- SIGNUP FORM (shown by default) -->
+            <div id="signup-form" class="auth-form active">
+                <h2>Join GRAINSHARE</h2>
+                <form id="signupForm">
+                    <div class="form-group">
+                        <label for="signup-name">Full Name</label>
+                        <input type="text" id="signup-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email">Email</label>
+                        <input type="email" id="signup-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-phone">Phone Number</label>
+                        <input type="tel" id="signup-phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password">Password</label>
+                        <input type="password" id="signup-password" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-role">I am a:</label>
+                        <select id="signup-role" required>
+                            <option value="">Choose your role</option>
+                            <option value="donor">Food Donor</option>
+                            <option value="recipient">Recipient Organization</option>
+                            <option value="volunteer">Volunteer</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="auth-btn">Sign Up</button>
+                </form>
+                <p class="auth-switch">
+                    Already have an account?
+                    <a href="#" onclick="showLogin()">Login here</a>
+                </p>
+            </div>
+
+            <!-- LOGIN FORM (hidden by default) -->
+            <div id="login-form" class="auth-form">
+                <h2>Welcome Back</h2>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-role">I am a:</label>
+                        <select id="login-role" required>
+                            <option value="">Choose your role</option>
+                            <option value="donor">Food Donor</option>
+                            <option value="recipient">Recipient Organization</option>
+                            <option value="volunteer">Volunteer</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="auth-btn">Login</button>
+                </form>
+                <p class="auth-switch">
+                    Don't have an account?
+                    <a href="#" onclick="showSignup()">Sign up here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <nav>
+        <div class="container">
+            <div class="logo">GRAINSHARE</div>
+            <ul>
+                <li><a href="#" data-page="home">Home</a></li>
+                <li><a href="#" data-page="donate">Donate Food</a></li>
+                <li><a href="#" data-page="request">Request Food</a></li>
+                <li><a href="#" data-page="dashboard">Dashboard</a></li>
+                <li><a href="#" data-page="about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Home Page -->
+    <section id="home" class="page active">
+        <!-- HEERO SECTION -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-text">
+                    <h1>Reduce Food Waste</h1>
+                    <p>Coordinate food donations across your community. Help fight hunger and create a sustainable future.</p>
+                    <button class="btn hero-btn" onclick="showPage('donate-request')">Donate Now</button>
+                </div>
+                <div class="hero-image">
+                    <img src="threekid.jpg" alt="Children receiving food donations">
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. STORYTELLING SECTION (2 STORIES) -->
+        <section class="storytelling">
+            <div class="container">
+                <h2>Why GRAINSHARE Matters</h2>
+                <div class="stories">
+                    <div class="story-card">
+                        <h3>🍽️ The Restaurant's Dilemma</h3>
+                        <p>Every night, local restaurants prepare extra food for customers who never come. Instead of letting it go to waste, they can now share it with those who need it most.</p>
+                    </div>
+                    <div class="story-card">
+                        <h3>🏠 Families in Need</h3>
+                        <p>Nearby families and shelters struggle to provide meals. GRAINSHARE connects them directly with surplus food, ensuring no one goes hungry.</p>
+                    </div>
+                </div>
+                <p class="story-conclusion">GRAINSHARE connects surplus food to hunger — before it becomes waste.</p>
+            </div>
+        </section>
+
+        <!-- 3. HOW IT WORKS (3 STEPS) -->
+        <section class="how-it-works">
+            <div class="container">
+                <h2>How It Works</h2>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-icon">🍱</div>
+                        <h3>Post Surplus Food</h3>
+                        <p>Share details of extra food you have.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">📍</div>
+                        <h3>Smart Match</h3>
+                        <p>We connect you with nearby NGOs.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">🚚</div>
+                        <h3>Deliver & Track</h3>
+                        <p>Deliver food and see the impact.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. CALL TO ACTION (5 OPTIONS) -->
+        <section class="cta">
+            <div class="container">
+                <h2>Take Action Now</h2>
+                <div class="cta-buttons">
+                    <button class="btn cta-btn" onclick="showPage('donate')">Donate Food</button>
+                    <button class="btn cta-btn" onclick="showPage('request')">Request Food</button>
+                
+
+                    <button class="btn cta-btn" onclick="showPage('dashboard')">View Impact Dashboard</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. VERIFIED NGOs SECTION (ANDHRA PRADESH – VIJAYAWADA) -->
+        <section class="ngos">
+            <div class="container">
+                <h2>Verified NGOs in Vijayawada</h2>
+                <div class="ngo-list">
+                    <div class="ngo-card">
+                        <h3>Akshaya Patra Foundation <span class="verified">✓ Verified</span></h3>
+                        <p>Providing mid-day meals to children in schools.</p>
+                        <a href="https://www.akshayapatra.org" target="_blank">Visit Website</a>
+                    </div>
+                    <div class="ngo-card">
+                        <h3>Feeding India <span class="verified">✓ Verified</span></h3>
+                        <p>Zomato's initiative to fight hunger and reduce food waste.</p>
+                        <a href="https://www.feedingindia.org" target="_blank">Visit Website</a>
+                    </div>
+                    <div class="ngo-card">
+                        <h3>Robin Hood Army Vijayawada <span class="verified">✓ Verified</span></h3>
+                        <p>Delivering food to the needy in Vijayawada.</p>
+                        <a href="https://robinhoodarmy.com" target="_blank">Visit Website</a>
+                    </div>
+                    <div class="ngo-card">
+                        <h3>ISKCON Food Relief Vijayawada <span class="verified">✓ Verified</span></h3>
+                        <p>Distributing free meals and groceries to the underprivileged.</p>
+                        <a href="https://iskconfoodrelief.com" target="_blank">Visit Website</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+
+    <!-- Donate Request Page -->
+    <section id="donate-request" class="page">
+        <div class="content-section">
+            <div class="container">
+                <h2>Donate Food</h2>
+                <p style="text-align: center; color: #666; margin-bottom: 20px;">All fields are required to proceed.</p>
+                <div class="multi-step-form">
+                    <div class="step-indicator" id="step-indicator">Step 1 of 3: Donor Details</div>
+
+                    <!-- Step 1: Donor Details -->
+                    <div id="step1" class="step active">
+                        <h3>Donor Details</h3>
+                        <div class="form-group">
+                            <label for="donor-name">Full Name</label>
+                            <input type="text" id="donor-name">
+                        </div>
+                        <div class="form-group">
+                            <label for="donor-email">Email Address</label>
+                            <input type="email" id="donor-email">
+                        </div>
+                        <div class="form-group">
+                            <label for="donor-phone">Phone Number</label>
+                            <input type="tel" id="donor-phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="donor-city">City / Location</label>
+                            <input type="text" id="donor-city">
+                        </div>
+                        <div class="form-buttons">
+                            <div></div>
+                            <button type="button" class="next-btn" onclick="nextStep()">Next</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Food Details -->
+                    <div id="step2" class="step">
+                        <h3>Food Details</h3>
+                        <div class="form-group">
+                            <label for="food-type">Food Type</label>
+                            <select id="food-type">
+                                <option value="">Select...</option>
+                                <option value="veg">Vegetarian</option>
+                                <option value="non-veg">Non-Vegetarian</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="food-category">Food Category</label>
+                            <select id="food-category">
+                                <option value="">Select...</option>
+                                <option value="cooked">Cooked</option>
+                                <option value="raw">Raw</option>
+                                <option value="packed">Packed</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="food-quantity">Quantity</label>
+                            <input type="text" id="food-quantity" placeholder="e.g., 50 kg, 100 servings">
+                        </div>
+                        <div class="form-group">
+                            <label for="food-description">Food Description</label>
+                            <textarea id="food-description" placeholder="Describe the food..."></textarea>
+                        </div>
+                        <div class="form-buttons">
+                            <button type="button" class="prev-btn" onclick="prevStep()">Previous</button>
+                            <button type="button" class="next-btn" onclick="nextStep()">Next</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Pickup & Safety Details -->
+                    <div id="step3" class="step">
+                        <h3>Pickup & Safety Details</h3>
+                        <div class="form-group">
+                            <label for="pickup-address">Pickup Address</label>
+                            <textarea id="pickup-address" placeholder="Full address for pickup..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="pickup-time">Preferred Pickup Time</label>
+                            <input type="datetime-local" id="pickup-time">
+                        </div>
+                        <div class="form-group">
+                            <label for="prepared-time">Food Prepared Time</label>
+                            <input type="datetime-local" id="prepared-time">
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="safety-confirm">
+                                I confirm the food is safe and prepared hygienically
+                            </label>
+                        </div>
+                        <div class="form-buttons">
+                            <button type="button" class="prev-btn" onclick="prevStep()">Previous</button>
+                            <button type="button" class="submit-btn" onclick="submitDonation()">Submit Donation</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Donate Page -->
+    <section id="donate" class="page">
+        <div class="content-section">
+            <div class="container">
+                <h2>Donate Food</h2>
+                <div class="form-container">
+                    <form id="donate-form">
+                        <div class="form-group">
+                            <label for="donor-name">Donor Name</label>
+                            <input type="text" id="donor-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="donor-phone">Phone Number</label>
+                            <input type="tel" id="donor-phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="donor-email">Email</label>
+                            <input type="email" id="donor-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="donor-location">Location (City / Area)</label>
+                            <input type="text" id="donor-location" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="food-type">Food Type</label>
+                            <select id="food-type" required>
+                                <option value="">Select...</option>
+                                <option value="veg">Veg</option>
+                                <option value="non-veg">Non-Veg</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="food-category">Food Category</label>
+                            <select id="food-category" required>
+                                <option value="">Select...</option>
+                                <option value="cooked">Cooked</option>
+                                <option value="raw">Raw</option>
+                                <option value="packed">Packed</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="food-quantity">Quantity</label>
+                            <input type="text" id="food-quantity" placeholder="e.g., 50 kg, 100 servings" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="pickup-address">Pickup Address</label>
+                            <textarea id="pickup-address" placeholder="Full address for pickup..." required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="pickup-time">Pickup Time</label>
+                            <input type="datetime-local" id="pickup-time" required>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="safety-confirm" required>
+                                I confirm the food is safe and prepared hygienically
+                            </label>
+                        </div>
+                        <button type="submit" class="btn">Submit Donation</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Request Page -->
+    <section id="request" class="page">
+        <div class="content-section">
+            <div class="container">
+                <h2>Request Food</h2>
+                <div class="form-container">
+                    <form id="request-form">
+                        <div class="form-group">
+                            <label for="org-name">Organization Name</label>
+                            <input type="text" id="org-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-name">Contact Person Name</label>
+                            <input type="text" id="contact-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-phone">Phone Number</label>
+                            <input type="tel" id="contact-phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-email">Email</label>
+                            <input type="email" id="contact-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="org-location">Location</label>
+                            <input type="text" id="org-location" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="needed-food-type">Food Type Needed</label>
+                            <select id="needed-food-type" required>
+                                <option value="">Select...</option>
+                                <option value="veg">Veg</option>
+                                <option value="non-veg">Non-Veg</option>
+                                <option value="any">Any</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="quantity-required">Quantity Required</label>
+                            <input type="text" id="quantity-required" placeholder="e.g., 50 kg, 100 servings" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="date-required">Date Required</label>
+                            <input type="date" id="date-required" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="purpose">Purpose / Description</label>
+                            <textarea id="purpose" placeholder="Describe the purpose and any special requirements..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn">Submit Request</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Page -->
+    <section id="dashboard" class="page">
+        <div class="content-section">
+            <div class="container">
+                <h2>Dashboard</h2>
+                
+                <h3>Recent Donations</h3>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <h4>Donation #001</h4>
+                        <p><strong>Donor:</strong> John Restaurant</p>
+                        <p><strong>Food:</strong> Rice - 50kg</p>
+                        <p><strong>Date:</strong> Jan 1, 2026</p>
+                        <p><strong>Status:</strong> Delivered to Akshaya Patra</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <h4>Donation #002</h4>
+                        <p><strong>Donor:</strong> Green Grocery</p>
+                        <p><strong>Food:</strong> Vegetables - 30kg</p>
+                        <p><strong>Date:</strong> Dec 28, 2025</p>
+                        <p><strong>Status:</strong> Delivered to Robin Hood Army</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <h4>Donation #003</h4>
+                        <p><strong>Donor:</strong> Bakery Corner</p>
+                        <p><strong>Food:</strong> Bread - 20kg</p>
+                        <p><strong>Date:</strong> Dec 25, 2025</p>
+                        <p><strong>Status:</strong> Delivered to Feeding India</p>
+                    </div>
+                </div>
+                
+                <h3>Recent Requests</h3>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <h4>Request #001</h4>
+                        <p><strong>Organization:</strong> Akshaya Patra</p>
+                        <p><strong>Food Needed:</strong> Rice - 100kg</p>
+                        <p><strong>Date:</strong> Jan 2, 2026</p>
+                        <p><strong>Status:</strong> Fulfilled</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <h4>Request #002</h4>
+                        <p><strong>Organization:</strong> Robin Hood Army</p>
+                        <p><strong>Food Needed:</strong> Mixed Vegetables - 40kg</p>
+                        <p><strong>Date:</strong> Dec 30, 2025</p>
+                        <p><strong>Status:</strong> In Progress</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <h4>Request #003</h4>
+                        <p><strong>Organization:</strong> ISKCON Food Relief</p>
+                        <p><strong>Food Needed:</strong> Fruits - 25kg</p>
+                        <p><strong>Date:</strong> Dec 27, 2025</p>
+                        <p><strong>Status:</strong> Fulfilled</p>
+                    </div>
+                </div>
+                
+                <h3>Volunteers Helped</h3>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <h4>Volunteer: Sarah Johnson</h4>
+                        <p><strong>Activity:</strong> Food Distribution</p>
+                        <p><strong>Hours:</strong> 8</p>
+                        <p><strong>Date:</strong> Jan 1, 2026</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <h4>Volunteer: Mike Chen</h4>
+                        <p><strong>Activity:</strong> Food Collection</p>
+                        <p><strong>Hours:</strong> 6</p>
+                        <p><strong>Date:</strong> Dec 30, 2025</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <h4>Volunteer: Emily Davis</h4>
+                        <p><strong>Activity:</strong> Community Outreach</p>
+                        <p><strong>Hours:</strong> 4</p>
+                        <p><strong>Date:</strong> Dec 28, 2025</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Page -->
+    <section id="about" class="page">
+        <div class="content-section">
+            <div class="container">
+                <h2>About GRAINSHARE</h2>
+                
+                <p>GRAINSHARE is a comprehensive platform dedicated to reducing food waste and improving food security by connecting surplus food donors with organizations that serve those in need. We create a transparent, efficient system that turns excess food into meaningful support for communities.</p>
+                
+                <div class="about-cards">
+                    <div class="about-card">
+                        <h3>Our Mission</h3>
+                        <p>Our mission is to eliminate food waste while strengthening community food security. Every year, billions of kilos of perfectly good food end up in landfills while millions go hungry. GrainShare bridges this gap by providing a seamless platform for food redistribution.</p>
+                    </div>
+                    
+                    <div class="about-card">
+                        <h3>How It Works</h3>
+                        <p>GrainShare operates as a digital bridge between food donors and recipient organizations. Donors can easily list their surplus food, while organizations can request donations based on their needs. Our platform ensures safe, efficient coordination and tracking of food distribution.</p>
+                    </div>
+                    
+                    <div class="about-card">
+                        <h3>User Roles</h3>
+                        <p>Our platform supports multiple user roles to ensure smooth operation and maximum impact:</p>
+                        <ul>
+                            <li><strong>Admin:</strong> Manages platform content, oversees user interactions, and ensures data accuracy.</li>
+                            <li><strong>Food Donor:</strong> Lists surplus food, coordinates donations, and tracks impact.</li>
+                            <li><strong>Recipient Organization:</strong> Requests food donations, manages logistics, and distributes to those in need.</li>
+                            <li><strong>Volunteer:</strong> Assists with food collection, distribution, and community outreach.</li>
+                            <li><strong>Data Analyst:</strong> Tracks food waste trends, analyzes data, and generates reports.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="about-card">
+                        <h3>Our Values</h3>
+                        <ul>
+                            <li><strong>🌍 Sustainability:</strong> Reducing food waste and environmental impact is core to our mission.</li>
+                            <li><strong>❤️ Community:</strong> Building stronger communities through food security and connection.</li>
+                            <li><strong>🤝 Transparency:</strong> Open data and honest impact tracking build trust with all users.</li>
+                            <li><strong>📈 Scale:</strong> Growing the platform to reach millions and prevent massive waste.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="about-card">
+                        <h3>Our Journey</h3>
+                        <ul>
+                            <li><strong>🚀 2023:</strong> GrainShare Founded</li>
+                            <li><strong>📦 2024:</strong> 1M kg Food Saved</li>
+                            <li><strong>👥 2024:</strong> 50,000+ Users</li>
+                            <li><strong>🌐 2025:</strong> Expanding Globally</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="about-card">
+                        <h3>Our Team</h3>
+                        <ul>
+                            <li><strong>👨‍💼 Riyaz:</strong> TEAM LEAD</li>
+                            <li><strong>👩‍💼 Srikanth:</strong> CO-TEAM LEAD</li>
+                            <li><strong>👨‍💻 Charan:</strong> CO-TEAM LEAD</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <p>Together, we're building a more sustainable future by connecting donors with those who need food most, reducing environmental impact, and fostering stronger communities.</p>
+            </div>
+        </div>
+    </section>
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>GRAINSHARE</h4>
+                    <p>Reducing food waste, feeding communities.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#" data-page="home">Home</a></li>
+                        <li><a href="#" data-page="about">About</a></li>
+                        <li><a href="#" data-page="donate-request">Donate</a></li>
+                        <li><a href="#" data-page="dashboard">Dashboard</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 GRAINSHARE. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // SIMPLE AUTHENTICATION SYSTEM - Perfect for hackathon explanation
+
+        // Function to show signup form
+        function showSignup() {
+            document.getElementById('signup-form').classList.add('active');
+            document.getElementById('login-form').classList.remove('active');
+        }
+
+        // Function to show login form
+        function showLogin() {
+            document.getElementById('login-form').classList.add('active');
+            document.getElementById('signup-form').classList.remove('active');
+        }
+
+        // Handle signup form submission
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Stop page refresh
+
+            // Get user input
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const role = document.getElementById('signup-role').value;
+
+            // Basic validation
+            if (!name || !email || !role) {
+                alert('Please fill all required fields!');
+                return;
+            }
+
+            // Success - hide auth and show website
+            alert(`Welcome to GRAINSHARE, ${name}!`);
+            document.getElementById('auth-modal').classList.remove('active');
+            showPage('home');
+        });
+
+        // Handle login form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Stop page refresh
+
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const role = document.getElementById('login-role').value;
+
+            // Basic validation
+            if (!email || !password || !role) {
+                alert('Please fill all required fields!');
+                return;
+            }
+
+            // Success - hide auth and show website
+            alert('Welcome back to GRAINSHARE!');
+            document.getElementById('auth-modal').classList.remove('active');
+            showPage('home');
+        });
+
+        // PAGE NAVIGATION - Simple function to switch pages
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+
+            // Update navigation highlight
+            document.querySelectorAll('nav a').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelector(`nav a[data-page="${pageId}"]`).classList.add('active');
+
+            // Initialize donate form when page is shown
+            if (pageId === 'donate-request') {
+                currentStep = 1;
+                showStep(1);
+            }
+        }
+
+        // Add click handlers to navigation links
+        document.querySelectorAll('nav a[data-page]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const pageId = this.getAttribute('data-page');
+                showPage(pageId);
+            });
+        });
+
+        // Handle other forms
+        document.getElementById('donate-form').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent page reload
+
+            // Get form values
+            const name = document.getElementById('donor-name').value.trim();
+            const phone = document.getElementById('donor-phone').value.trim();
+            const email = document.getElementById('donor-email').value.trim();
+            const location = document.getElementById('donor-location').value.trim();
+            const foodType = document.getElementById('food-type').value;
+            const foodCategory = document.getElementById('food-category').value;
+            const quantity = document.getElementById('food-quantity').value.trim();
+            const address = document.getElementById('pickup-address').value.trim();
+            const time = document.getElementById('pickup-time').value;
+            const safety = document.getElementById('safety-confirm').checked;
+
+            // Validate required fields
+            if (!name || !phone || !email || !location || !foodType || !foodCategory || !quantity || !address || !time || !safety) {
+                alert('Please fill all required fields and confirm food safety.');
+                return;
+            }
+
+            // Success - show alert and reset form
+            alert('Thank you for donating food!');
+            this.reset();
+        });
+
+        document.getElementById('request-form').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent page reload
+
+            // Get form values
+            const orgName = document.getElementById('org-name').value.trim();
+            const contactName = document.getElementById('contact-name').value.trim();
+            const phone = document.getElementById('contact-phone').value.trim();
+            const email = document.getElementById('contact-email').value.trim();
+            const location = document.getElementById('org-location').value.trim();
+            const foodType = document.getElementById('needed-food-type').value;
+            const quantity = document.getElementById('quantity-required').value.trim();
+            const date = document.getElementById('date-required').value;
+            const purpose = document.getElementById('purpose').value.trim();
+
+            // Validate required fields
+            if (!orgName || !contactName || !phone || !email || !location || !foodType || !quantity || !date || !purpose) {
+                alert('Please fill all required fields.');
+                return;
+            }
+
+            // Success - show alert and reset form
+            alert('Your food request has been submitted!');
+            this.reset();
+        });
+
+        // MULTI-STEP DONATE FORM FUNCTIONS
+        let currentStep = 1;
+        const totalSteps = 3;
+
+        function showStep(step) {
+            // Hide all steps
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            // Show current step
+            document.getElementById('step' + step).classList.add('active');
+            // Update indicator
+            document.getElementById('step-indicator').textContent = `Step ${step} of ${totalSteps}: ${getStepTitle(step)}`;
+        }
+
+        function getStepTitle(step) {
+            const titles = {
+                1: 'Donor Details',
+                2: 'Food Details',
+                3: 'Pickup & Safety Details'
+            };
+            return titles[step];
+        }
+
+        function nextStep() {
+            if (validateStep(currentStep)) {
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    showStep(currentStep);
+                }
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+
+        function validateStep(step) {
+            let isValid = true;
+            let missingFields = [];
+
+            // Clear previous highlights
+            document.querySelectorAll('.multi-step-form input, .multi-step-form select, .multi-step-form textarea').forEach(field => {
+                field.style.borderColor = '#ddd';
+            });
+
+            if (step === 1) {
+                const name = document.getElementById('donor-name');
+                const email = document.getElementById('donor-email');
+                const phone = document.getElementById('donor-phone');
+                const city = document.getElementById('donor-city');
+
+                if (!name.value.trim()) { missingFields.push(name); }
+                if (!email.value.trim()) { missingFields.push(email); }
+                if (!phone.value.trim()) { missingFields.push(phone); }
+                if (!city.value.trim()) { missingFields.push(city); }
+            } else if (step === 2) {
+                const type = document.getElementById('food-type');
+                const category = document.getElementById('food-category');
+                const quantity = document.getElementById('food-quantity');
+                const description = document.getElementById('food-description');
+
+                if (!type.value) { missingFields.push(type); }
+                if (!category.value) { missingFields.push(category); }
+                if (!quantity.value.trim()) { missingFields.push(quantity); }
+                if (!description.value.trim()) { missingFields.push(description); }
+            } else if (step === 3) {
+                const address = document.getElementById('pickup-address');
+                const pickupTime = document.getElementById('pickup-time');
+                const preparedTime = document.getElementById('prepared-time');
+                const confirm = document.getElementById('safety-confirm');
+
+                if (!address.value.trim()) { missingFields.push(address); }
+                if (!pickupTime.value) { missingFields.push(pickupTime); }
+                if (!preparedTime.value) { missingFields.push(preparedTime); }
+                if (!confirm.checked) { 
+                    confirm.parentElement.style.color = 'red';
+                    isValid = false;
+                }
+            }
+
+            if (missingFields.length > 0) {
+                missingFields.forEach(field => {
+                    field.style.borderColor = 'red';
+                });
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        function submitDonation() {
+            if (validateStep(currentStep)) {
+                alert('Thank you for donating food!');
+                // Reset form and go back to step 1
+                currentStep = 1;
+                showStep(currentStep);
+                // Clear all fields
+                document.querySelectorAll('.multi-step-form input, .multi-step-form select, .multi-step-form textarea').forEach(field => {
+                    field.value = '';
+                    field.style.borderColor = '#ddd';
+                });
+                document.getElementById('safety-confirm').checked = false;
+                document.getElementById('safety-confirm').parentElement.style.color = '#333';
+                // Redirect to dashboard
+                showPage('dashboard');
+            }
+        }
+
+        // START: Show authentication first, hide website
+        document.getElementById('auth-modal').classList.add('active');
+    </script>
+</body>
+</html>
